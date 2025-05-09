@@ -293,7 +293,7 @@ export const MainContentByAnima = (): JSX.Element => {
     }
   };
 
-  
+  const nestedScrollViewOffset = 48;
 
   React.useEffect(() => {
     const calculateHeight = () => {
@@ -427,7 +427,7 @@ export const MainContentByAnima = (): JSX.Element => {
             {/* Recently visited reports column */}
             <div style={{ flex: 1, minWidth: 0, height: nestedContainerHeight }}>
               <h2 style={Object.assign({ fontWeight: 600, fontSize: 16, letterSpacing: 0.15, lineHeight: '28px', marginBottom: 12 }, isColumnsSticky ? { position: 'sticky' as const, top: 0, background: '#fff', zIndex: 10, padding: '8px 0', boxShadow: '0 1px 4px 0 rgba(0,0,0,0.04)' } : {})}>Recently visited reports</h2>
-              <div className="inner-scroll-view" style={{ scrollbarWidth: 'none', overflow: 'hidden', height: 'calc(100% - 48px)', display: 'flex', flexDirection: 'column', width: '100%', alignItems: 'flex-start', gap: 12, overflowY: isColumnsSticky ? 'auto' : 'hidden' }}>
+              <div className="inner-scroll-view" style={{ scrollbarWidth: 'none', overflow: 'hidden', height: `calc(100% - ${nestedScrollViewOffset}px)`, display: 'flex', flexDirection: 'column', width: '100%', alignItems: 'flex-start', gap: 12, overflowY: isColumnsSticky ? 'auto' : 'hidden' }}>
                 {recentReports.map((report, index) => (
                   <div key={index} style={{ display: 'flex', width: '100%', alignItems: 'center', gap: 16 }}>
                     <img alt="Report thumbnail" src="/image-18.png" style={{ width: 44, height: 44, objectFit: 'cover' }} />
@@ -454,7 +454,7 @@ export const MainContentByAnima = (): JSX.Element => {
                 <button style={{ background: '#fff', border: 'none', borderRadius: 8, padding: '4px 12px', fontWeight: 500, fontSize: 14, cursor: 'pointer' }}>My collections</button>
                 <button style={{ background: 'transparent', border: 'none', borderRadius: 8, padding: '4px 12px', fontWeight: 500, fontSize: 14, cursor: 'pointer' }}>Followed</button>
               </div>
-              <div className="inner-scroll-view" style={{ scrollbarWidth: 'none', overflow: 'hidden', height: 'calc(100% - 48px)', display: 'flex', flexDirection: 'column', width: '100%', alignItems: 'flex-start', gap: 8, overflowY: isColumnsSticky ? 'auto' : 'hidden' }}>
+              <div className="inner-scroll-view" style={{ scrollbarWidth: 'none', overflow: 'hidden', height: `calc(100% - ${nestedScrollViewOffset + 42}px)`, display: 'flex', flexDirection: 'column', width: '100%', alignItems: 'flex-start', gap: 8, overflowY: isColumnsSticky ? 'auto' : 'hidden' }}>
                 {savedCollections.map((collection, index) => (
                   <div key={index} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: 8, width: '100%', border: '1px solid #dae2ec', borderRadius: 8, background: '#fff' }}>
                     <div style={{ display: 'flex', flexWrap: 'wrap', width: 65, height: 56, alignItems: 'flex-start', gap: 4 }}>
@@ -486,7 +486,7 @@ export const MainContentByAnima = (): JSX.Element => {
             {/* Newly released column */}
             <div style={{ flex: 1, minWidth: 0, height: nestedContainerHeight }}>
               <h2 style={Object.assign({ fontWeight: 600, fontSize: 16, letterSpacing: 0.15, lineHeight: '28px', marginBottom: 12 }, isColumnsSticky ? { position: 'sticky' as const, top: 0, background: '#fff', zIndex: 10, padding: '8px 0', boxShadow: '0 1px 4px 0 rgba(0,0,0,0.04)' } : {})}>Newly released</h2>
-              <div className="inner-scroll-view" style={{ scrollbarWidth: 'none', overflow: 'hidden', height: 'calc(100% - 48px)', display: 'flex', flexDirection: 'column', width: '100%', alignItems: 'flex-start', gap: 12, overflowY: isColumnsSticky ? 'auto' : 'hidden'}}>
+              <div className="inner-scroll-view" style={{ scrollbarWidth: 'none', overflow: 'hidden', height: `calc(100% - ${nestedScrollViewOffset}px)`, display: 'flex', flexDirection: 'column', width: '100%', alignItems: 'flex-start', gap: 12, overflowY: isColumnsSticky ? 'auto' : 'hidden'}}>
                 {newReleases.map((release, index) => (
                   <div key={index} style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 12, padding: 16, width: '100%', border: '1px solid #e5e7eb', borderRadius: 8, background: '#fff', boxShadow: '0 1px 2px 0 rgba(0,0,0,0.04)' }}>
                     <div style={{ width: '100%' }}>
