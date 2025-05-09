@@ -27,6 +27,7 @@ export const MainContentByAnima = (): JSX.Element => {
   const forYouRef = useRef<HTMLDivElement>(null);
   const columnsRef = useRef<HTMLDivElement>(null);
   const mainScrollRef = useRef<HTMLDivElement>(null);
+  const [nestedContainerHeight, setNestedContainerHeight] = useState(920);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -292,8 +293,48 @@ export const MainContentByAnima = (): JSX.Element => {
     }
   };
 
+  
+
+  React.useEffect(() => {
+    const calculateHeight = () => {
+      const nestedContainerHeight = (document.getElementById('main-canvas') as HTMLDivElement).offsetHeight - 48;
+      setNestedContainerHeight(nestedContainerHeight);
+    };
+
+    calculateHeight();
+    window.addEventListener('resize', calculateHeight);
+    return () => {
+      window.removeEventListener('resize', calculateHeight);
+    };
+  }, []);
+
+  React.useEffect(() => {
+    const outer = document.querySelector('#main-canvas') as HTMLDivElement;
+    const inner = document.querySelectorAll('.inner-scroll-view') as NodeListOf<HTMLDivElement>;
+    const listener = () => {
+      const outerBottom = Math.ceil(outer.scrollTop + outer.clientHeight) >= outer.scrollHeight;
+
+      if (outerBottom) {
+        inner.forEach((item) => {
+          item.style.overflow = 'auto';
+        });
+      } else {
+        inner.forEach((item) => {
+          item.style.overflow = 'hidden';
+        });
+      }
+    };
+  
+    listener();
+    outer.addEventListener('scroll', listener);
+
+    return () => {
+      outer.removeEventListener('scroll', listener);
+    };
+  }, []);
+
   return (
-    <div id="app-container" style={{ height: '100vh', background: '#f7f9fb', width: '100%' }}>
+    <div id="app-container" style={{ height: 'calc(100vh - 80px)', background: '#f7f9fb', width: '100%' }}>
       <div id="main-row" style={{ display: 'flex', minHeight: 0, height: '100%' }}>
         <nav id="primary-nav" style={{ width: 48, minWidth: 0, minHeight: 0 }}>
           {navLinks.map((link, index) => (
@@ -323,6 +364,7 @@ export const MainContentByAnima = (): JSX.Element => {
           padding: 24,
           height: '100%',
           overflowY: 'auto',
+          scrollbarWidth: 'none',
         }}>
           <section id="for-you-section" ref={forYouRef} style={{ position: 'relative', width: '100%', marginBottom: 24, minWidth: 0, maxWidth: '100%' }}>
             <header style={Object.assign({ display: 'flex', width: '100%', height: 28, alignItems: 'center', gap: 16, marginBottom: 8 }, isForYouSticky ? { position: 'sticky' as const, top: 0, background: '#fff', zIndex: 10, padding: '8px 0', boxShadow: '0 1px 4px 0 rgba(0,0,0,0.04)' } : {})}>
@@ -346,7 +388,7 @@ export const MainContentByAnima = (): JSX.Element => {
                 <ChevronRightIcon style={{ width: 24, height: 24 }} />
               </button>
 
-              <div ref={scrollContainerRef} style={{ display: 'flex', alignItems: 'flex-start', gap: 16, overflowX: 'auto', paddingBottom: 16, maxWidth: '100%', minWidth: 0, scrollSnapType: 'x mandatory' }}>
+              <div ref={scrollContainerRef} style={{ display: 'flex', alignItems: 'flex-start', gap: 16, overflowX: 'auto', paddingBottom: 16, maxWidth: '100%', minWidth: 0, scrollSnapType: 'x mandatory', scrollbarWidth: 'none' }}>
                 {featuredCards.map((card, index) => (
                   <div key={index} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, padding: 8, border: '1px solid #dae2ec', borderRadius: 12, background: '#fff', flexShrink: 0, minWidth: 0, width: 320, scrollSnapAlign: 'start' }}>
                     <div style={{ display: 'flex', height: 132, alignItems: 'flex-start', position: 'relative', width: '100%', borderRadius: 8, overflow: 'hidden', border: '1px solid #dae2ec' }}>
@@ -383,9 +425,9 @@ export const MainContentByAnima = (): JSX.Element => {
           {/* Three-column section */}
           <div id="three-column-section" ref={columnsRef} style={{ display: 'flex', alignItems: 'flex-start', gap: 16, position: 'relative', width: '100%', minWidth: 0 }}>
             {/* Recently visited reports column */}
-            <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ flex: 1, minWidth: 0, height: nestedContainerHeight }}>
               <h2 style={Object.assign({ fontWeight: 600, fontSize: 16, letterSpacing: 0.15, lineHeight: '28px', marginBottom: 12 }, isColumnsSticky ? { position: 'sticky' as const, top: 0, background: '#fff', zIndex: 10, padding: '8px 0', boxShadow: '0 1px 4px 0 rgba(0,0,0,0.04)' } : {})}>Recently visited reports</h2>
-              <div style={{ display: 'flex', flexDirection: 'column', width: '100%', alignItems: 'flex-start', gap: 12, overflowY: isColumnsSticky ? 'auto' : 'hidden', height: isColumnsSticky ? 'calc(100vh - 8rem)' : undefined }}>
+              <div className="inner-scroll-view" style={{ scrollbarWidth: 'none', overflow: 'hidden', height: 'calc(100% - 48px)', display: 'flex', flexDirection: 'column', width: '100%', alignItems: 'flex-start', gap: 12, overflowY: isColumnsSticky ? 'auto' : 'hidden' }}>
                 {recentReports.map((report, index) => (
                   <div key={index} style={{ display: 'flex', width: '100%', alignItems: 'center', gap: 16 }}>
                     <img alt="Report thumbnail" src="/image-18.png" style={{ width: 44, height: 44, objectFit: 'cover' }} />
@@ -402,7 +444,7 @@ export const MainContentByAnima = (): JSX.Element => {
             </div>
 
             {/* Saved column */}
-            <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ flex: 1, minWidth: 0, height: nestedContainerHeight }}>
               <div style={{ display: 'flex', height: 28, alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
                 <h2 style={{ fontWeight: 600, fontSize: 16, letterSpacing: 0.15, lineHeight: '28px' }}>Saved</h2>
                 <button style={{ color: '#1976d2', fontSize: 14, padding: 0, background: 'none', border: 'none', cursor: 'pointer' }}>See more</button>
@@ -412,7 +454,7 @@ export const MainContentByAnima = (): JSX.Element => {
                 <button style={{ background: '#fff', border: 'none', borderRadius: 8, padding: '4px 12px', fontWeight: 500, fontSize: 14, cursor: 'pointer' }}>My collections</button>
                 <button style={{ background: 'transparent', border: 'none', borderRadius: 8, padding: '4px 12px', fontWeight: 500, fontSize: 14, cursor: 'pointer' }}>Followed</button>
               </div>
-              <div style={{ display: 'flex', flexDirection: 'column', width: '100%', alignItems: 'flex-start', gap: 8, overflowY: isColumnsSticky ? 'auto' : 'hidden', height: isColumnsSticky ? 'calc(100vh - 8rem)' : undefined }}>
+              <div className="inner-scroll-view" style={{ scrollbarWidth: 'none', overflow: 'hidden', height: 'calc(100% - 48px)', display: 'flex', flexDirection: 'column', width: '100%', alignItems: 'flex-start', gap: 8, overflowY: isColumnsSticky ? 'auto' : 'hidden' }}>
                 {savedCollections.map((collection, index) => (
                   <div key={index} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: 8, width: '100%', border: '1px solid #dae2ec', borderRadius: 8, background: '#fff' }}>
                     <div style={{ display: 'flex', flexWrap: 'wrap', width: 65, height: 56, alignItems: 'flex-start', gap: 4 }}>
@@ -442,9 +484,9 @@ export const MainContentByAnima = (): JSX.Element => {
             </div>
 
             {/* Newly released column */}
-            <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ flex: 1, minWidth: 0, height: nestedContainerHeight }}>
               <h2 style={Object.assign({ fontWeight: 600, fontSize: 16, letterSpacing: 0.15, lineHeight: '28px', marginBottom: 12 }, isColumnsSticky ? { position: 'sticky' as const, top: 0, background: '#fff', zIndex: 10, padding: '8px 0', boxShadow: '0 1px 4px 0 rgba(0,0,0,0.04)' } : {})}>Newly released</h2>
-              <div style={{ display: 'flex', flexDirection: 'column', width: '100%', alignItems: 'flex-start', gap: 12, overflowY: isColumnsSticky ? 'auto' : 'hidden', height: isColumnsSticky ? 'calc(100vh - 8rem)' : undefined }}>
+              <div className="inner-scroll-view" style={{ scrollbarWidth: 'none', overflow: 'hidden', height: 'calc(100% - 48px)', display: 'flex', flexDirection: 'column', width: '100%', alignItems: 'flex-start', gap: 12, overflowY: isColumnsSticky ? 'auto' : 'hidden'}}>
                 {newReleases.map((release, index) => (
                   <div key={index} style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 12, padding: 16, width: '100%', border: '1px solid #e5e7eb', borderRadius: 8, background: '#fff', boxShadow: '0 1px 2px 0 rgba(0,0,0,0.04)' }}>
                     <div style={{ width: '100%' }}>
